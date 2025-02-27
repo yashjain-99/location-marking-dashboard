@@ -5,9 +5,10 @@ import useAuth from "./hooks/useAuth";
 import MainMap from "./components/MainMap";
 import { useState } from "react";
 import AddToFavModal from "./components/AddToFavModal";
+import Sidebar from "./components/Sidebar";
 
 export default function App() {
-  const [isLogin, token] = useAuth();
+  const isLoggedIn = useAuth();
   const mapboxAccessToken = import.meta.env.VITE_MAPBOX_TOKEN;
   const [selectedLocationData, setSelectedLocationData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,7 +66,7 @@ export default function App() {
     },
   ]);
 
-  if (!isLogin) return "please log in";
+  if (!isLoggedIn) return "please log in";
 
   return (
     <>
@@ -78,48 +79,7 @@ export default function App() {
               setIsModalOpen={setIsModalOpen}
             />
           </div>
-          <div className="absolute lg:static top-0 p-4 w-full lg:w-96 shadow-xl z-10 overflow-scroll lg:z-30 h-full lg:h-auto bg-white">
-            <div className="text-2xl text-black font-semibold w-full mb-1.5">
-              Your Favourites
-            </div>
-            <div className="mb-4">
-              <div className="font-medium text-gray-500">
-                {currentViewData.length} results
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-              {currentViewData.map((map) => (
-                <div
-                  key={map.id}
-                  className="flex-shrink-0 h-56 bg-gray-100 rounded-lg shadow-lg overflow-hidden"
-                >
-                  <div className="h-40">
-                    <Map
-                      style={{ width: "100%", height: "100%" }}
-                      zoom={3}
-                      initialViewState={{
-                        longitude: map.coordinates[0],
-                        latitude: map.coordinates[1],
-                        zoom: 14,
-                      }}
-                      mapboxAccessToken={mapboxAccessToken}
-                      mapStyle="mapbox://styles/ernebuta/ck6l5q6me1dmn1ip74713pndm"
-                      scrollZoom={false}
-                    >
-                      <Marker
-                        longitude={map.coordinates[0]}
-                        latitude={map.coordinates[1]}
-                        color="red"
-                      />
-                    </Map>
-                  </div>
-                  <div className="p-3">
-                    <p className="font-semibold text-lg">{map.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <Sidebar />
         </div>
         <AddToFavModal
           isModalOpen={isModalOpen}

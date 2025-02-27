@@ -30,8 +30,6 @@ const AddToFavModal = ({ isModalOpen, closeModal, coordinates }) => {
   const mapboxAccessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
   const handleSave = () => {
-    console.log("Description:", description);
-    console.log("Coordinates:", coordinates);
     closeModal();
   };
 
