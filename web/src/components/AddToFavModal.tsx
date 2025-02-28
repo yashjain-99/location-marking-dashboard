@@ -1,8 +1,11 @@
 import { useState } from "react";
 import Modal from "react-modal";
 import { Map, Marker } from "react-map-gl/mapbox";
-
 import "mapbox-gl/dist/mapbox-gl.css";
+import usePrivateAxios from "../hooks/usePrivateAxios";
+import { useAppSelector } from "../redux/hooks";
+import { useDispatch } from "react-redux";
+import { setLocations } from "../redux/slices/locationsSlice";
 
 const customStyles = {
   content: {
@@ -25,12 +28,42 @@ const customStyles = {
   },
 };
 
-const AddToFavModal = ({ isModalOpen, closeModal, coordinates }) => {
+Modal.setAppElement("#root");
+
+const AddToFavModal = ({
+  isModalOpen,
+  closeModal,
+}: {
+  isModalOpen: boolean;
+  closeModal: () => void;
+}) => {
   const [description, setDescription] = useState("");
   const mapboxAccessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-  const handleSave = () => {
-    closeModal();
+  const axios = usePrivateAxios();
+  const selectedLocation = useAppSelector(
+    (state) => state.location.selectedLocations
+  );
+  const dispatch = useDispatch();
+  if (!selectedLocation) return;
+  const { lat: latitude, lng: longitude } = selectedLocation!;
+
+  const handleSave = async () => {
+    try {
+      axios
+        .post("http://localhost:8000/api/locations", {
+          lat: latitude,
+          long: longitude,
+          description,
+        })
+        .then((res) => {
+          dispatch(setLocations(res.data));
+        })
+        .catch((err) => console.log("err saving data"));
+      closeModal();
+    } catch (err) {
+      console.error("Failed to save location:", err);
+    }
   };
 
   return (
@@ -44,18 +77,14 @@ const AddToFavModal = ({ isModalOpen, closeModal, coordinates }) => {
         <div className="w-1/2 h-64">
           <Map
             initialViewState={{
-              latitude: coordinates[1],
-              longitude: coordinates[0],
+              latitude,
+              longitude,
               zoom: 12,
             }}
             mapStyle="mapbox://styles/mapbox/streets-v11"
             mapboxAccessToken={mapboxAccessToken}
           >
-            <Marker
-              longitude={coordinates[0]}
-              latitude={coordinates[1]}
-              color="red"
-            />
+            <Marker longitude={longitude} latitude={latitude} color="red" />
           </Map>
         </div>
 

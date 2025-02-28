@@ -4,30 +4,33 @@ import { Map, NavigationControl, Marker } from "react-map-gl/mapbox";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { setSelectedLocations } from "../redux/slices/locationsSlice";
 
 export const accessToken = (mapboxgl.accessToken =
   import.meta.env.VITE_MAPBOX_TOKEN);
 
-const MainMap = ({
-  currentViewData,
-  setSelectedLocationData,
-  setIsModalOpen,
-}) => {
+interface MainMapProps {
+  setIsModalOpen: (isOpen: boolean) => void;
+}
+
+const MainMap = ({ setIsModalOpen }: MainMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
+  const dispatch = useAppDispatch();
+  const locations = useAppSelector((state) => state.location.locations);
   const [viewport, setViewport] = useState({
-    latitude: 39.94596,
-    longitude: -75.15654,
+    latitude: locations[0]?.lat ?? undefined,
+    longitude: locations[0]?.long ?? undefined,
     zoom: 8,
   });
 
   const handleMapClick = useCallback(
-    ({ lngLat: { lng, lat } }) => {
+    ({ lngLat: { lng, lat } }: { lngLat: { lng: number; lat: number } }) => {
       if (!mapLoaded) return;
-
-      setSelectedLocationData([lng, lat]);
+      dispatch(setSelectedLocations({ lng, lat }));
       setIsModalOpen(true);
     },
-    [mapLoaded]
+    [mapLoaded, dispatch, setIsModalOpen]
   );
 
   return (
@@ -49,11 +52,11 @@ const MainMap = ({
       style={{ width: "100%", height: "100%" }}
     >
       <NavigationControl />
-      {currentViewData.map((location) => (
+      {locations.map((location) => (
         <Marker
           key={location.id}
-          longitude={location.coordinates[0]}
-          latitude={location.coordinates[1]}
+          longitude={location.long}
+          latitude={location.lat}
           color="red"
         />
       ))}

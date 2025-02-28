@@ -1,89 +1,35 @@
-import Map, { Marker } from "react-map-gl/mapbox";
+import { useState } from "react";
+
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import useAuth from "./hooks/useAuth";
 import MainMap from "./components/MainMap";
-import { useState } from "react";
 import AddToFavModal from "./components/AddToFavModal";
 import Sidebar from "./components/Sidebar";
+import useFetchLocations from "./hooks/useFetchLocations";
 
 export default function App() {
   const isLoggedIn = useAuth();
-  const mapboxAccessToken = import.meta.env.VITE_MAPBOX_TOKEN;
-  const [selectedLocationData, setSelectedLocationData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [currentViewData, setCurrentViewData] = useState([
-    {
-      id: "1",
-      description: "Location 1",
-      coordinates: [139.6917, 35.6895],
-    },
-    {
-      id: "2",
-      description: "Location 2",
-      coordinates: [-0.1278, 51.5074],
-    },
-    {
-      id: "3",
-      description: "Location 3",
-      coordinates: [-74.006, 40.7128],
-    },
-    {
-      id: "4",
-      description: "Location 4",
-      coordinates: [77.209, 28.6139],
-    },
-    {
-      id: "5",
-      description: "Location 5",
-      coordinates: [151.2093, -33.8688],
-    },
-    {
-      id: "6",
-      description: "Location 6",
-      coordinates: [31.2357, 30.0444],
-    },
-    {
-      id: "7",
-      description: "Location 7",
-      coordinates: [-43.1729, -22.9068],
-    },
-    {
-      id: "8",
-      description: "Location 8",
-      coordinates: [37.6173, 55.7558],
-    },
-    {
-      id: "9",
-      description: "Location 9",
-      coordinates: [2.3522, 48.8566],
-    },
-    {
-      id: "10",
-      description: "Location 10",
-      coordinates: [-79.3832, 43.6532],
-    },
-  ]);
+  const { locationData, loading, error } = useFetchLocations(isLoggedIn);
 
-  if (!isLoggedIn) return "please log in";
+  if (!isLoggedIn) return "Please log in";
+
+  if (loading) return "Loading...";
+  if (error) return "Error fetching locations. Please try again later.";
 
   return (
     <>
       <main className="flex flex-col h-screen w-screen">
         <div className="relative lg:flex grow shrink min-h-0">
           <div className="grow shrink-0 relative h-full lg:h-auto z-30">
-            <MainMap
-              currentViewData={currentViewData}
-              setSelectedLocationData={setSelectedLocationData}
-              setIsModalOpen={setIsModalOpen}
-            />
+            <MainMap setIsModalOpen={setIsModalOpen} />
           </div>
-          <Sidebar />
+          <Sidebar currentViewData={locationData} />
         </div>
         <AddToFavModal
           isModalOpen={isModalOpen}
-          coordinates={selectedLocationData}
           closeModal={() => {
             setIsModalOpen(false);
           }}

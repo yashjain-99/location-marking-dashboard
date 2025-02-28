@@ -1,11 +1,7 @@
-import express from "express";
-const app = express();
-const port = process.env.API_PORT || 8000;
+import app from "./app.js";
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+const PORT = process.env.PORT || 8000;
 
-app.listen(port, () => {
-  console.log(`API listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

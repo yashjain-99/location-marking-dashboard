@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Keycloak from "keycloak-js";
 import { useAppDispatch } from "../redux/hooks";
 import { setUser } from "../redux/slices/userSlice";
+import { useKeycloakContext } from "../contexts/KeycloakProvider";
 
 const client = new Keycloak({
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -13,12 +14,12 @@ const useAuth = () => {
   const isRun = useRef(false);
   const dispatch = useAppDispatch();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { setKeycloak } = useKeycloakContext();
 
   const createUser = async (client: Keycloak) => {
     try {
       const userInfo = await client.loadUserInfo();
-      const user = { ...userInfo, token: client.token, logout: client.logout };
-      dispatch(setUser(user as User));
+      dispatch(setUser(userInfo as User));
     } catch (error) {
       console.error(error);
     }
@@ -35,6 +36,7 @@ const useAuth = () => {
       .then((res) => {
         setIsLoggedIn(res);
         createUser(client);
+        setKeycloak(client);
       })
       .catch((e) => console.error(e));
   }, []);

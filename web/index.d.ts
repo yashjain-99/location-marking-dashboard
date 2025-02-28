@@ -6,6 +6,19 @@ declare type User = {
   name: string;
   preferred_username: string;
   sub: string;
-  token: string;
-  logout: () => Promise<void>;
+};
+
+declare type CurrLocation = {
+  id: number;
+  userId: string;
+  lat: number;
+  long: number;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+declare type SelectedLocation = {
+  lng: number;
+  lat: number;
 };
