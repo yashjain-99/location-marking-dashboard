@@ -12,7 +12,7 @@ export default function App() {
   const isLoggedIn = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { locationData, loading, error } = useFetchLocations(isLoggedIn);
+  const { loading, error } = useFetchLocations(isLoggedIn);
 
   if (!isLoggedIn) return "Please log in";
 
@@ -26,7 +26,7 @@ export default function App() {
           <div className="grow shrink-0 relative h-full lg:h-auto z-30">
             <MainMap setIsModalOpen={setIsModalOpen} />
           </div>
-          <Sidebar currentViewData={locationData} />
+          <Sidebar />
         </div>
         <AddToFavModal
           isModalOpen={isModalOpen}

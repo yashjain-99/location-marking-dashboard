@@ -12,7 +12,6 @@ const authMiddleware = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    // Fetch user details from Keycloak's UserInfo endpoint
     const userInfoResponse = await fetch(
       `${process.env.KEYCLOAK_URL}/realms/auth/protocol/openid-connect/userinfo`,
       {

@@ -17,7 +17,7 @@ export default function useFetchLocations(isLoggedIn: boolean) {
         const response = await axios.get<Location[]>(
           "http://localhost:8000/api/locations"
         );
-        dispatch(setLocations(response.data as Location[]));
+        dispatch(setLocations(response.data as unknown as CurrLocation[]));
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err);

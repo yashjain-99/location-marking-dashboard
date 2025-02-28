@@ -18,9 +18,12 @@ const MainMap = ({ setIsModalOpen }: MainMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const dispatch = useAppDispatch();
   const locations = useAppSelector((state) => state.location.locations);
+  const initialLatitude = locations[0]?.lat ?? 0;
+  const initialLongitude = locations[0]?.long ?? 0;
+
   const [viewport, setViewport] = useState({
-    latitude: locations[0]?.lat ?? undefined,
-    longitude: locations[0]?.long ?? undefined,
+    latitude: initialLatitude,
+    longitude: initialLongitude,
     zoom: 8,
   });
 

@@ -6,8 +6,9 @@ import usePrivateAxios from "../hooks/usePrivateAxios";
 import { useAppSelector } from "../redux/hooks";
 import { useDispatch } from "react-redux";
 import { setLocations } from "../redux/slices/locationsSlice";
+import { CSSProperties } from "react";
 
-const customStyles = {
+const customStyles: { content: CSSProperties; overlay: CSSProperties } = {
   content: {
     top: "62px",
     left: "50%",
@@ -59,7 +60,7 @@ const AddToFavModal = ({
         .then((res) => {
           dispatch(setLocations(res.data));
         })
-        .catch((err) => console.log("err saving data"));
+        .catch(() => console.log("err saving data"));
       closeModal();
     } catch (err) {
       console.error("Failed to save location:", err);
