@@ -40,6 +40,9 @@ const AddToFavModal = ({
 }) => {
   const [description, setDescription] = useState("");
   const mapboxAccessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+  const API_URL = `${import.meta.env.VITE_API_DOMAIN}:${
+    import.meta.env.VITE_API_PORT
+  }/api/locations`;
 
   const axios = usePrivateAxios();
   const selectedLocation = useAppSelector(
@@ -52,7 +55,7 @@ const AddToFavModal = ({
   const handleSave = async () => {
     try {
       axios
-        .post("http://localhost:8000/api/locations", {
+        .post(API_URL, {
           lat: latitude,
           long: longitude,
           description,

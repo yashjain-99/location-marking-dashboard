@@ -8,15 +8,16 @@ export default function useFetchLocations(isLoggedIn: boolean) {
   const [error, setError] = useState<Error | null>(null);
   const axios = usePrivateAxios();
   const dispatch = useAppDispatch();
+  const API_URL = `${import.meta.env.VITE_API_DOMAIN}:${
+    import.meta.env.VITE_API_PORT
+  }/api/locations`;
 
   const fetchLocations = useCallback(async () => {
     if (isLoggedIn) {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get<Location[]>(
-          "http://localhost:8000/api/locations"
-        );
+        const response = await axios.get<Location[]>(API_URL);
         dispatch(setLocations(response.data as unknown as CurrLocation[]));
       } catch (err: unknown) {
         if (err instanceof Error) {
