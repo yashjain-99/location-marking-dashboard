@@ -65,6 +65,7 @@ const AddToFavModal = ({
         })
         .catch(() => console.log("err saving data"));
       closeModal();
+      setDescription("");
     } catch (err) {
       console.error("Failed to save location:", err);
     }

@@ -47,8 +47,8 @@ const Sidebar = () => {
                 style={{ width: "100%", height: "100%" }}
                 zoom={3}
                 initialViewState={{
-                  longitude: location.lat,
-                  latitude: location.long,
+                  longitude: location.long,
+                  latitude: location.lat,
                   zoom: 14,
                 }}
                 mapboxAccessToken={mapboxAccessToken}
@@ -56,8 +56,8 @@ const Sidebar = () => {
                 scrollZoom={false}
               >
                 <Marker
-                  longitude={location.lat}
-                  latitude={location.long}
+                  longitude={location.long}
+                  latitude={location.lat}
                   color="red"
                 />
               </Map>
